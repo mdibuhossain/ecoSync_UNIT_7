@@ -1,5 +1,7 @@
 import React from "react";
 import { useSegments, useRouter } from "expo-router";
+import { onAuthStateChanged } from "firebase/auth";
+import { FIREBASE_AUTH } from "../config/firebaseConfig";
 
 const useAuth = () => {
   const router = useRouter();
@@ -19,11 +21,24 @@ const useAuth = () => {
     }
   }, [user, rootSegment]);
 
+  React.useEffect(() => {
+    const unsubscribe = onAuthStateChanged(FIREBASE_AUTH, (user) => {
+      if (user) {
+        setUser(user);
+      } else {
+        setUser(null);
+      }
+    });
+    return unsubscribe;
+  }, []);
+
   return {
     user,
     authError,
     userLoading,
     authSuccess,
+    setUser,
+    setAuthError,
     setAuthSuccess,
   };
 };

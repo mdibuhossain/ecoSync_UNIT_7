@@ -1,11 +1,39 @@
-import React, { useState } from "react";
+import React from "react";
+import {
+  signInWithEmailAndPassword,
+  createUserWithEmailAndPassword,
+} from "firebase/auth";
 import { View, Text, TextInput, Button, StyleSheet } from "react-native";
+import { FIREBASE_AUTH } from "../../config/firebaseConfig";
+import { AuthContext } from "../../contexts/authContext";
 
 export default function AuthScreen() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [user, setUser] = useState(null);
-  const [isLogin, setIsLogin] = useState(false);
+  const { user, setUser, authError, setAuthError } =
+    React.useContext(AuthContext);
+  const [email, setEmail] = React.useState("");
+  const [password, setPassword] = React.useState("");
+  const [isLogin, setIsLogin] = React.useState(false);
+  const [authLoading, setAuthLoading] = React.useState(false);
+
+  console.log(authError);
+
+  const handleSignin = async () => {};
+
+  const handleSignup = async () => {
+    setAuthLoading(true);
+    createUserWithEmailAndPassword(FIREBASE_AUTH, email, password)
+      .then((userCredential) => {
+        setUser(userCredential.user);
+      })
+      .catch((error) => {
+        const errorCode = error.code;
+        const errorMessage = error.message;
+        setAuthError(errorMessage);
+      })
+      .finally(() => {
+        setAuthLoading(false);
+      });
+  };
 
   return (
     <View style={styles.container}>
@@ -26,7 +54,17 @@ export default function AuthScreen() {
           secureTextEntry
         />
         <View style={styles.buttonContainer}>
-          <Button title={isLogin ? "Sign in" : "Sign up"} />
+          {isLogin ? (
+            <Button
+              onPress={handleSignin}
+              title={authLoading ? "Loading..." : "Sign in"}
+            />
+          ) : (
+            <Button
+              onPress={handleSignup}
+              title={authLoading ? "Loading..." : "Sign up"}
+            />
+          )}
         </View>
 
         <View style={styles.bottomContainer}>
