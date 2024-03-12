@@ -95,24 +95,7 @@ export default App = () => {
     });
     return () => unsubscribe();
   }, [auth]);
-  const handleAuthentication = async () => {
-    try {
-      if (user) {
-        console.log("logged out successfully");
-        await signOut(auth);
-      } else {
-        if (isLogin) {
-          await signInWithEmailAndPassword(auth, email, password);
-          console.log("Sign in successfully");
-        } else {
-          await createUserWithEmailAndPassword(auth, email, password);
-          console.log("sign up successfully");
-        }
-      }
-    } catch (error) {
-      console.error("Authentication error:", error.message);
-    }
-  };
+
   return (
     <ScrollView contentContainerStyle={styles.container}>
       {user ? (

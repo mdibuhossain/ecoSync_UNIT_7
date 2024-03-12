@@ -1,7 +1,7 @@
 import React from "react";
 import { ScrollView, StyleSheet, View, Text } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import RippleBtn from "../components/RippleBtn";
+import RippleBtn from "../../components/RippleBtn";
 
 const index = () => {
   const handleFilterCategory = (e) => {

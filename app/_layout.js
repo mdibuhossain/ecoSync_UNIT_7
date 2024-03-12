@@ -1,16 +1,15 @@
 import React from "react";
-import { Stack } from "expo-router";
+import { Slot, Stack } from "expo-router";
+import { onAuthStateChanged } from "firebase/auth";
+import { FIREBASE_AUTH } from "../config/firebaseConfig";
+import { Text } from "react-native";
+import { AuthProvider } from "../contexts/authContext";
 
 const RootLayout = () => {
   return (
-    <Stack>
-      <Stack.Screen
-        name="(tabs)"
-        options={{
-          headerShown: false,
-        }}
-      />
-    </Stack>
+    <AuthProvider>
+      <Slot />
+    </AuthProvider>
   );
 };
 
