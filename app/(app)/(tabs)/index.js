@@ -3,50 +3,32 @@ import { ScrollView, StyleSheet, View, FlatList, Image } from "react-native";
 import { TouchableRipple, Text } from "react-native-paper";
 import { SafeAreaView } from "react-native-safe-area-context";
 import RippleBtn from "../../components/RippleBtn";
-
-const categories = [
-  "Pizza",
-  "Burger",
-  "Chawmin",
-  "Juice",
-  "Fries",
-  "Pizza",
-  "Burger",
-  "Chawmin",
-  "Juice",
-  "Fries",
-  "Pizza",
-  "Burger",
-  "Chawmin",
-  "Juice",
-  "Fries",
-  "Pizza",
-  "Burger",
-  "Chawmin",
-  "Juice",
-  "Fries",
-  "Pizza",
-  "Burger",
-  "Chawmin",
-  "Juice",
-  "Fries",
-  "Pizza",
-  "Burger",
-  "Chawmin",
-  "Juice",
-  "Fries",
-];
-const col = 2;
+import axios from "axios";
+import DataPath from "../../../menu.json";
 
 const index = () => {
+  const [categories, setCategories] = React.useState([]);
+  const [menu, setMenu] = React.useState([]);
+  const [filteredMenu, setFilteredMenu] = React.useState([]);
+
+  React.useEffect(() => {
+    const fetchData = async () => {
+      setMenu(DataPath);
+      setFilteredMenu(DataPath);
+      setCategories([...new Set(DataPath.map((obj) => obj?.category))]);
+    };
+    fetchData();
+  }, []);
+
   const handleFilterCategory = (e) => {
-    console.log(e);
+    setFilteredMenu([...menu?.filter((obj) => obj?.category === e)]);
   };
 
   const RenderItem = ({ cat }) => {
+    console.log(cat);
     return (
       <View key={cat.index} style={styles.individualMenuItemContainer}>
-        <TouchableRipple
+        {/* <TouchableRipple
           onPress={() => {}}
           rippleColor="rgba(200, 200, 200, 0.5)"
           style={styles.menuItem}
@@ -58,7 +40,8 @@ const index = () => {
             }}
             style={{ height: "100%", width: "100%" }}
           />
-        </TouchableRipple>
+        </TouchableRipple> */}
+        <Text>{cat?.name}</Text>
       </View>
     );
   };
@@ -85,24 +68,10 @@ const index = () => {
 
       <FlatList
         numColumns={3}
-        data={categories}
+        data={filteredMenu}
         style={styles.menuContainer}
-        renderItem={(cat) => <RenderItem cat={cat} />}
+        renderItem={(cat) => <RenderItem key={cat.index} cat={cat.item} />}
       />
-
-      {/* <ScrollView>
-        <View style={styles.menuContainer}>
-          {categories?.map((cat, index) => (
-            <View key={index} style={{ width: 100 / col + "%" }}>
-              <View
-                style={{ padding: 5, ...styles.individualMenuItemContainer }}
-              >
-                <Text>{cat}</Text>
-              </View>
-            </View>
-          ))}
-        </View>
-      </ScrollView> */}
     </SafeAreaView>
   );
 };
