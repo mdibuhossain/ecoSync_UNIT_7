@@ -12,12 +12,27 @@ export default function AuthScreen() {
     React.useContext(AuthContext);
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
-  const [isLogin, setIsLogin] = React.useState(false);
+  const [confirmationPassword, setConfirmationPassword] = React.useState("");
+  const [isLoginUI, setIsLoginUI] = React.useState(true);
   const [authLoading, setAuthLoading] = React.useState(false);
 
   console.log(authError);
 
-  const handleSignin = async () => {};
+  const handleSignin = async () => {
+    setAuthLoading(true);
+    signInWithEmailAndPassword(FIREBASE_AUTH, email, password)
+      .then((userCredential) => {
+        setUser(userCredential.user);
+      })
+      .catch((error) => {
+        const errorCode = error.code;
+        const errorMessage = error.message;
+        setAuthError(errorMessage);
+      })
+      .finally(() => {
+        setAuthLoading(false);
+      });
+  };
 
   const handleSignup = async () => {
     setAuthLoading(true);
@@ -38,7 +53,7 @@ export default function AuthScreen() {
   return (
     <View style={styles.container}>
       <View style={styles.authContainer}>
-        <Text style={styles.title}>{isLogin ? "Sign in" : "Sign up"}</Text>
+        <Text style={styles.title}>{isLoginUI ? "Sign in" : "Sign up"}</Text>
         <TextInput
           style={styles.input}
           value={email}
@@ -53,8 +68,17 @@ export default function AuthScreen() {
           placeholder="Password"
           secureTextEntry
         />
+        {!isLoginUI && (
+          <TextInput
+            style={styles.input}
+            value={confirmationPassword}
+            onChangeText={setConfirmationPassword}
+            placeholder="Confirm password"
+            secureTextEntry
+          />
+        )}
         <View style={styles.buttonContainer}>
-          {isLogin ? (
+          {isLoginUI ? (
             <Button
               onPress={handleSignin}
               title={authLoading ? "Loading..." : "Sign in"}
@@ -68,8 +92,8 @@ export default function AuthScreen() {
         </View>
 
         <View style={styles.bottomContainer}>
-          <Text style={styles.toggleText} onPress={() => setIsLogin(!isLogin)}>
-            {isLogin
+          <Text style={styles.toggleText} onPress={() => setIsLoginUI(!isLoginUI)}>
+            {isLoginUI
               ? "Need an account? Sign up"
               : "Already have an account? Sign in"}
           </Text>
