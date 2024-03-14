@@ -130,32 +130,32 @@
   {
     "category": "heavy meal",
     "subCategory": "set menu",
-    "name": "Fried Rice + Crispy Chicken + Vegetable",
-    "photo": "Fried Rice + Crispy Chicken + Vegetable",
+    "name": "Platter 1",
+    "photo": "Platter 1",
     "unit": "medium",
     "price": 89
   },
   {
     "category": "heavy meal",
     "subCategory": "set menu",
-    "name": "Fried Rice + Crispy Chicken + Vegetable",
-    "photo": "Fried Rice + Crispy Chicken + Vegetable",
+    "name": "Platter 1",
+    "photo": "Platter 1",
     "unit": "large",
     "price": 119
   },
   {
     "category": "heavy meal",
     "subCategory": "set menu",
-    "name": "Fried Rice + Curry Chicken + Vegetable",
-    "photo": "Fried Rice + Crispy Chicken + Vegetable",
+    "name": "Platter 2",
+    "photo": "Platter 2",
     "unit": "medium",
     "price": 89
   },
   {
     "category": "heavy meal",
     "subCategory": "set menu",
-    "name": "Fried Rice + Curry Chicken + Vegetable",
-    "photo": "Fried Rice + Crispy Chicken + Vegetable",
+    "name": "Platter 2",
+    "photo": "Platter 2",
     "unit": "large",
     "price": 119
   },
