@@ -6,12 +6,13 @@ import {
   FlatList,
   Image,
   TouchableOpacity,
+  RefreshControl,
 } from "react-native";
 import { TouchableRipple, Text } from "react-native-paper";
 import { SafeAreaView } from "react-native-safe-area-context";
 import RippleBtn from "../../components/RippleBtn";
-import axios from "axios";
-import DataPath from "../../../menu.json";
+import { onSnapshot } from "firebase/firestore";
+import { menuCollection } from "../../../config/firebaseConfig";
 
 const index = () => {
   const [categories, setCategories] = React.useState([]);
@@ -19,16 +20,35 @@ const index = () => {
   const [filteredMenu, setFilteredMenu] = React.useState([]);
   const [totalCost, setTotalCost] = React.useState(0);
   const [estimate, setEstimate] = React.useState({});
+  const [refreshing, setRefreshing] = React.useState(false);
 
+  const fetchData = () => {
+    onSnapshot(menuCollection, {
+      next: (snapshot) => {
+        const tmpMenu = [];
+        snapshot.docs.forEach((doc) => {
+          tmpMenu.push({ id: doc.id, ...doc.data() });
+        });
+        setMenu(tmpMenu);
+        setFilteredMenu(tmpMenu);
+      },
+    });
+  };
+
+  const onRefresh = () => {
+    setRefreshing(true);
+    fetchData();
+    setRefreshing(false);
+  };
+  console.log(menu);
   React.useEffect(() => {
-    const fetchData = async () => {
-      setMenu(DataPath);
-      setFilteredMenu(DataPath);
-      const tmp = [...new Set(DataPath.map((obj) => obj?.category))];
-      setCategories(tmp);
-    };
     fetchData();
   }, []);
+
+  React.useEffect(() => {
+    const tmp = [...new Set(menu?.map((obj) => obj?.category))];
+    setCategories(tmp);
+  }, [menu]);
 
   const handleFilterCategory = (e) => {
     const tmp = [...menu?.filter((obj) => obj?.category === e)];
@@ -36,7 +56,7 @@ const index = () => {
   };
 
   const handleCount = (cat) => {
-    setTotalCost(totalCost + cat?.price);
+    setTotalCost(Number(totalCost) + Number(cat?.price));
     let cashMemo = { ...estimate };
     cashMemo[cat.name] =
       cashMemo[cat.name] !== undefined ? cashMemo[cat.name] + 1 : 1;
@@ -90,12 +110,22 @@ const index = () => {
             <View
               style={{
                 flex: 1,
+                flexDirection: "row",
                 backgroundColor: "#f1f0ff",
-                justifyContent: "center",
+                justifyContent: "space-around",
                 alignItems: "center",
                 width: "100%",
               }}
             >
+              <Text
+                style={{
+                  textAlign: "center",
+                  fontWeight: "bold",
+                  fontSize: 16,
+                }}
+              >
+                {cat?.unit}
+              </Text>
               <Text
                 style={{
                   textAlign: "center",
@@ -137,6 +167,9 @@ const index = () => {
         data={filteredMenu}
         style={styles.menuContainer}
         renderItem={(cat) => <RenderItem key={cat.index} cat={cat.item} />}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }
       />
     </SafeAreaView>
   );
