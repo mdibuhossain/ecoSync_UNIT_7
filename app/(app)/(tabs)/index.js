@@ -1,15 +1,12 @@
 import React from "react";
 import {
-  ScrollView,
   StyleSheet,
   View,
   FlatList,
   Image,
   TouchableOpacity,
   RefreshControl,
-  Button,
-  TouchableHighlight,
-  Pressable,
+  ActivityIndicator,
 } from "react-native";
 import { TouchableRipple, Text } from "react-native-paper";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -26,18 +23,25 @@ const index = () => {
   const [estimate, setEstimate] = React.useState({});
   const [estimateSerial, setEstimateSerial] = React.useState([]);
   const [refreshing, setRefreshing] = React.useState(false);
+  const [isLoading, setIsLoading] = React.useState(true);
 
   const fetchData = () => {
-    onSnapshot(menuCollection, {
-      next: (snapshot) => {
-        const tmpMenu = [];
-        snapshot.docs.forEach((doc) => {
-          tmpMenu.push({ id: doc.id, ...doc.data() });
-        });
-        setMenu(tmpMenu);
-        setFilteredMenu(tmpMenu);
-      },
-    });
+    setIsLoading(true);
+    try {
+      onSnapshot(menuCollection, {
+        next: (snapshot) => {
+          const tmpMenu = [];
+          snapshot.docs.forEach((doc) => {
+            tmpMenu.push({ id: doc.id, ...doc.data() });
+          });
+          setMenu(tmpMenu);
+          setFilteredMenu(tmpMenu);
+        },
+      });
+    } catch (err) {
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const onRefresh = () => {
@@ -132,6 +136,26 @@ const index = () => {
               backgroundColor: "white",
             }}
           >
+            {estimate[`${cat?.name} ${cat?.unit}`] && (
+              <View
+                style={{
+                  position: "absolute",
+                  zIndex: 100,
+                  left: 0,
+                  bottom: 0,
+                  backgroundColor: "green",
+                  borderRadius: 100,
+                  width: 20,
+                  height: 20,
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                <Text style={{ fontSize: 8, color: "white" }}>
+                  {estimate[`${cat?.name} ${cat?.unit}`]?.qnt}
+                </Text>
+              </View>
+            )}
             <View
               style={{
                 flex: 1,
@@ -266,6 +290,17 @@ const index = () => {
           </TouchableOpacity>
         </View>
       </View>
+      {isLoading && (
+        <View
+          style={{
+            flexDirection: "column",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          <Text style={{ textAlign: "center", fontSize: 18 }}>Loading...</Text>
+        </View>
+      )}
       {/* Category list */}
       <View style={{ marginVertical: 10 }}>
         <FlatList
