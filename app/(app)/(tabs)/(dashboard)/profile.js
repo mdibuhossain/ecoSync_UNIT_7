@@ -1,11 +1,10 @@
 import React, { useContext } from "react";
 import { Button, Text, View } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
 import { signOut } from "firebase/auth";
 import { FIREBASE_AUTH } from "../../../../config/firebaseConfig";
 import { AuthContext } from "../../../../contexts/authContext";
 
-const Dashboard = () => {
+const Profile = () => {
   const { setUser } = useContext(AuthContext);
   const handleSignout = () => {
     signOut(FIREBASE_AUTH)
@@ -15,13 +14,10 @@ const Dashboard = () => {
       .catch((error) => {});
   };
   return (
-    <SafeAreaView>
-      <View>
-        <Text>This is Dashboard</Text>
-        <Button title="Logout" onPress={handleSignout} />
-      </View>
-    </SafeAreaView>
+    <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+      <Button title="Logout" onPress={handleSignout} />
+    </View>
   );
 };
 
-export default Dashboard;
+export default Profile;

@@ -11,19 +11,19 @@ const TabLayout = () => {
           headerTitle: "Estimate",
           headerShown: false,
           title: "Estimate",
-          tabBarIcon: ({ color }) => (
-            <FontAwesome size={28} name="home" color={color} />
+          tabBarIcon: ({ size, color }) => (
+            <FontAwesome size={size} name="home" color={color} />
           ),
         }}
       />
       <Tabs.Screen
-        name="dashboard/index"
+        name="(dashboard)"
         options={{
           headerTitle: "Dashboard",
           headerShown: false,
           title: "Dashboard",
-          tabBarIcon: ({ color }) => (
-            <FontAwesome size={28} name="cog" color={color} />
+          tabBarIcon: ({ size, color }) => (
+            <FontAwesome size={size} name="cog" color={color} />
           ),
         }}
       />
