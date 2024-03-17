@@ -8,8 +8,16 @@ import {
   TextInput,
   StyleSheet,
   Pressable,
+  ScrollView,
+  Alert,
 } from "react-native";
 import * as ImagePicker from "expo-image-picker";
+import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
+import { onSnapshot, addDoc } from "@firebase/firestore";
+import {
+  FIREBASE_STORAGE,
+  menuCollection,
+} from "../../../../config/firebaseConfig";
 
 const NewMenu = () => {
   const [image, setImage] = React.useState(null);
@@ -18,6 +26,7 @@ const NewMenu = () => {
   const [subCategory, setSubCategory] = React.useState("");
   const [unit, setUnit] = React.useState("");
   const [price, setPrice] = React.useState("");
+  const [photo, setPhoto] = React.useState("");
   const [uploading, setUploading] = React.useState(false);
 
   const pickImage = async () => {
@@ -34,16 +43,54 @@ const NewMenu = () => {
       }
     } catch (err) {}
   };
+
   const uploadImage = async () => {
-    setUploading(true);
     const response = await fetch(image);
     const blob = await response.blob();
-    const filename = `${name}.${image.split(".").pop()}`;
+    const filename = `menu photos/${name}.${image.split(".").pop()}`;
+    const storageRef = ref(FIREBASE_STORAGE, filename);
+    let result = "";
+    await uploadBytes(storageRef, blob);
+    const photoURL = await getDownloadURL(storageRef);
+    setPhoto(photoURL);
+    return photoURL;
+  };
+
+  const handleSubmit = async () => {
+    try {
+      setUploading(true);
+      const photoURL = await uploadImage();
+      const data = {
+        category: category.toLowerCase(),
+        name,
+        photo: photoURL,
+        price: Number(price),
+        subCategory: subCategory.toLowerCase(),
+        unit,
+      };
+      addDoc(menuCollection, data).then((ref) => {
+        Alert.alert("Successfully added!!");
+        setName("");
+        setCategory("");
+        setSubCategory("");
+        setPhoto("");
+        setImage("");
+        setPrice("");
+        setUnit("");
+      });
+    } catch (err) {
+    } finally {
+      setUploading(false);
+    }
   };
 
   return (
-    <View
-      style={{ marginTop: 20, alignItems: "center", justifyContent: "center" }}
+    <ScrollView
+      contentContainerStyle={{
+        marginTop: 20,
+        alignItems: "center",
+        justifyContent: "center",
+      }}
     >
       <View style={styles.innerContainer}>
         {image && (
@@ -91,11 +138,11 @@ const NewMenu = () => {
         <Pressable style={styles.imgBtn} onPress={pickImage}>
           <Text>Choose Menu photo</Text>
         </Pressable>
-        <Pressable style={styles.submitBtn} onPress={uploadImage}>
-          <Text style={styles.btnText}>ADD</Text>
+        <Pressable style={styles.submitBtn} onPress={handleSubmit}>
+          <Text style={styles.btnText}>{uploading ? "Loading..." : "ADD"}</Text>
         </Pressable>
       </View>
-    </View>
+    </ScrollView>
   );
 };
 
@@ -113,6 +160,7 @@ const styles = StyleSheet.create({
     marginVertical: 5,
     borderWidth: 1,
     padding: 10,
+    backgroundColor: "white",
   },
   submitBtn: {
     paddingVertical: 10,
@@ -120,6 +168,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     backgroundColor: "orange",
     marginTop: 10,
+    marginBottom: 30,
     borderWidth: 1,
   },
   imgBtn: {

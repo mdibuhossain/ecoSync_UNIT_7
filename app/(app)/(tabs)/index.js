@@ -186,7 +186,12 @@ const index = () => {
             <View style={{ flex: 3, marginBottom: 8 }}>
               <Image
                 resizeMode="contain"
-                source={require("../../../assets/Mixed Chowmein.png")}
+                source={{
+                  uri:
+                    cat?.photo?.length > 0
+                      ? cat?.photo
+                      : "https://img.freepik.com/premium-vector/pizza-pixel-art-piece-pizza-is-pixelated-fast-food-isolated_182604-226.jpg",
+                }}
                 style={{ height: "100%", width: "100%" }}
               />
             </View>
@@ -348,12 +353,12 @@ const styles = StyleSheet.create({
     fontWeight: "700",
   },
   menuContainer: {
-    marginBottom: 145,
+    marginBottom: 190,
   },
   individualMenuItemContainer: {
     flex: 1,
     height: 150,
-    maxWidth: 100 / 2 + "%",
+    maxWidth: 100 / 2.185 + "%",
     backgroundColor: "rgb(231, 231, 231)",
     borderRadius: 5,
     marginHorizontal: 5,
