@@ -162,11 +162,12 @@ const History = () => {
         </Text>
         <Text>{selectedDate}</Text>
       </View>
-      <FlatList
-        style={{ marginBottom: 145 }}
-        data={sellHistory}
-        renderItem={({ item }) => <HistoryStack key={item?.id} item={item} />}
-      />
+      <View style={{ marginBottom: 145 }}>
+        <FlatList
+          data={sellHistory}
+          renderItem={({ item }) => <HistoryStack key={item?.id} item={item} />}
+        />
+      </View>
     </View>
   );
 };
