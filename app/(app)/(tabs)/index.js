@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import {
   StyleSheet,
   View,
@@ -14,8 +14,10 @@ import RippleBtn from "../../components/RippleBtn";
 import { onSnapshot, addDoc, Timestamp } from "@firebase/firestore";
 import Svg, { Path } from "react-native-svg";
 import { menuCollection, memoCollection } from "../../../config/firebaseConfig";
+import { AuthContext } from "../../../contexts/authContext";
 
 const index = () => {
+  const { user } = useContext(AuthContext);
   const [categories, setCategories] = React.useState([]);
   const [menu, setMenu] = React.useState([]);
   const [filteredMenu, setFilteredMenu] = React.useState([]);
@@ -28,16 +30,18 @@ const index = () => {
   const fetchData = () => {
     setIsLoading(true);
     try {
-      onSnapshot(menuCollection, {
-        next: (snapshot) => {
-          const tmpMenu = [];
-          snapshot.docs.forEach((doc) => {
-            tmpMenu.push({ id: doc.id, ...doc.data() });
-          });
-          setMenu(tmpMenu);
-          setFilteredMenu(tmpMenu);
-        },
-      });
+      if (user) {
+        onSnapshot(menuCollection, {
+          next: (snapshot) => {
+            const tmpMenu = [];
+            snapshot.docs.forEach((doc) => {
+              tmpMenu.push({ id: doc.id, ...doc.data() });
+            });
+            setMenu(tmpMenu);
+            setFilteredMenu(tmpMenu);
+          },
+        });
+      }
     } catch (err) {
     } finally {
       setIsLoading(false);
@@ -107,16 +111,18 @@ const index = () => {
   };
 
   const handleSubmitCashMemo = async () => {
-    const result = await addDoc(memoCollection, {
-      ...estimate,
-      createdAt: Timestamp.now(),
-      sell: totalCost,
-    });
-    console.log(result);
-    if (result) {
-      setTotalCost(0);
-      setEstimate({});
-      setEstimateSerial([]);
+    if (user) {
+      const result = await addDoc(memoCollection, {
+        ...estimate,
+        createdAt: Timestamp.now(),
+        sell: totalCost,
+      });
+      console.log(result);
+      if (result) {
+        setTotalCost(0);
+        setEstimate({});
+        setEstimateSerial([]);
+      }
     }
   };
 
