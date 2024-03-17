@@ -16,7 +16,7 @@ export default function AuthScreen() {
   const [isLoginUI, setIsLoginUI] = React.useState(true);
   const [authLoading, setAuthLoading] = React.useState(false);
 
-  console.log(authError);
+  // console.log(authError);
 
   const handleSignin = async () => {
     setAuthLoading(true);

@@ -11,7 +11,7 @@ const useAuth = () => {
   const [authSuccess, setAuthSuccess] = React.useState("");
   const [userLoading, setUserLoading] = React.useState(true);
 
-  console.log(rootSegment);
+  // console.log(rootSegment);
 
   React.useEffect(() => {
     if (!user && !rootSegment !== "(auth)") {

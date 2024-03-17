@@ -26,6 +26,7 @@ const index = () => {
   const [estimateSerial, setEstimateSerial] = React.useState([]);
   const [refreshing, setRefreshing] = React.useState(false);
   const [isLoading, setIsLoading] = React.useState(true);
+  const [sellLoading, setSellLoading] = React.useState(false);
 
   const fetchData = () => {
     setIsLoading(true);
@@ -84,7 +85,7 @@ const index = () => {
     };
     setEstimateSerial(tmpEstimateSerial);
     setEstimate(cashMemo);
-    console.log(cashMemo);
+    // console.log(cashMemo);
   };
 
   const handleResetMenuSelection = () => {
@@ -105,24 +106,30 @@ const index = () => {
         delete tmpEstimate[lastProduct];
       }
       setEstimate(tmpEstimate);
-      console.log(tmpEstimate);
-      console.log(tmpEstimateSerial);
+      // console.log(tmpEstimate);
+      // console.log(tmpEstimateSerial);
     }
   };
 
   const handleSubmitCashMemo = async () => {
-    if (user) {
-      const result = await addDoc(memoCollection, {
-        ...estimate,
-        createdAt: Timestamp.now(),
-        sell: totalCost,
-      });
-      console.log(result);
-      if (result) {
-        setTotalCost(0);
-        setEstimate({});
-        setEstimateSerial([]);
+    setSellLoading(true);
+    try {
+      if (user) {
+        const result = await addDoc(memoCollection, {
+          ...estimate,
+          createdAt: Timestamp.now(),
+          sell: totalCost,
+        });
+        // console.log(result);
+        if (result) {
+          setTotalCost(0);
+          setEstimate({});
+          setEstimateSerial([]);
+        }
       }
+    } catch (err) {
+    } finally {
+      setSellLoading(false);
     }
   };
 
@@ -258,7 +265,7 @@ const index = () => {
           <Text
             style={{ fontSize: 12, paddingHorizontal: 15, fontWeight: "bold" }}
           >
-            Done
+            {sellLoading ? "Loading..." : "Done"}
           </Text>
         </TouchableOpacity>
         {/* Reset and pop button */}

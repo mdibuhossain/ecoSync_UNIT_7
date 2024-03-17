@@ -70,13 +70,13 @@ const NewMenu = () => {
       };
       addDoc(menuCollection, data).then((ref) => {
         Alert.alert("Successfully added!!");
-        setName("");
-        setCategory("");
-        setSubCategory("");
-        setPhoto("");
-        setImage("");
-        setPrice("");
-        setUnit("");
+        // setName("");
+        // setCategory("");
+        // setSubCategory("");
+        // setPhoto("");
+        // setImage("");
+        // setPrice("");
+        // setUnit("");
       });
     } catch (err) {
     } finally {
