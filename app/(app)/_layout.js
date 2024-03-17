@@ -9,6 +9,13 @@ const AppLayout = () => {
           headerShown: false,
         }}
       />
+      {/* <Stack.Screen
+        name="historyModal"
+        options={{
+          title: "Sell details",
+          presentation: "modal",
+        }}
+      /> */}
     </Stack>
   );
 };

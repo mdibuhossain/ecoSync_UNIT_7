@@ -1,5 +1,6 @@
 import React from "react";
-import { Button, FlatList, RefreshControl, View } from "react-native";
+import { Button, FlatList, View } from "react-native";
+import { Link, router } from "expo-router";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import { SafeAreaView } from "react-native-safe-area-context";
 import RippleBtn from "../../../components/RippleBtn";
@@ -7,12 +8,15 @@ import { Timestamp } from "firebase/firestore";
 import { query, where, getDocs } from "firebase/firestore";
 import { memoCollection } from "../../../../config/firebaseConfig";
 import { TouchableRipple, Text } from "react-native-paper";
+import HistoryModal from "../../../components/historyModa";
 
 const History = () => {
   const [isDatePickerVisible, setDatePickerVisibility] = React.useState(false);
   const [sellHistory, setSellHistory] = React.useState([]);
   const [totalSellHistory, setTotalSellHistory] = React.useState(0);
   const [selectedDate, setSelectedDate] = React.useState("");
+  const [modalVisible, setModalVisible] = React.useState(false);
+  const [singleProduct, setSingleProduct] = React.useState({});
 
   const showDatePicker = () => {
     setDatePickerVisibility(true);
@@ -123,7 +127,10 @@ const History = () => {
           paddingVertical: 15,
           paddingHorizontal: 12,
         }}
-        onPress={() => {}}
+        onPress={() => {
+          setSingleProduct(item);
+          setModalVisible(true);
+        }}
       >
         <View
           style={{
@@ -143,6 +150,11 @@ const History = () => {
 
   return (
     <View style={{ padding: 10 }}>
+      <HistoryModal
+        modalVisible={modalVisible}
+        setModalVisible={setModalVisible}
+        singleProduct={singleProduct}
+      />
       <View style={{ flexDirection: "row", columnGap: 5 }}>
         <RippleBtn value={"7d"} onPress={() => handleRangeDate(7)} />
         <RippleBtn value={"15d"} onPress={() => handleRangeDate(15)} />
@@ -165,7 +177,9 @@ const History = () => {
       <View style={{ marginBottom: 145 }}>
         <FlatList
           data={sellHistory}
-          renderItem={({ item }) => <HistoryStack key={item?.id} item={item} />}
+          renderItem={({ index, item }) => (
+            <HistoryStack key={index} item={item} />
+          )}
         />
       </View>
     </View>
