@@ -9,14 +9,21 @@ const DashBoardLayout = () => {
     <GestureHandlerRootView style={{ flex: 1 }}>
       <Drawer>
         <Drawer.Screen
-          name="history" // This is the name of the page and must match the url from root
+          name="history" // This is the name of the page and must match the url from immediate root
           options={{
             drawerLabel: "History",
             title: "History",
           }}
         />
         <Drawer.Screen
-          name="profile" // This is the name of the page and must match the url from root
+          name="newMenu" // This is the name of the page and must match the url from immediate root
+          options={{
+            drawerLabel: "Add new menu",
+            title: "Add New Menu",
+          }}
+        />
+        <Drawer.Screen
+          name="profile" // This is the name of the page and must match the url from immediate root
           options={{
             drawerLabel: "Profile",
             title: "Profile",

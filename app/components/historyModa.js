@@ -11,7 +11,6 @@ import {
 const HistoryModal = ({ singleProduct, modalVisible, setModalVisible }) => {
   const { date, id, sell, createdAt, ...products } = singleProduct;
   const keys = Object.keys(products);
-  console.log(products[keys[0]]);
   return (
     <Modal
       animationType="slide"
