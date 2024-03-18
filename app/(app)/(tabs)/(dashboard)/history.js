@@ -169,7 +169,7 @@ const History = () => {
         }}
       >
         <Text style={{ marginVertical: 12 }}>
-          Total cost:{" "}
+          Total sell:{" "}
           <Text style={{ fontWeight: "bold" }}>৳{totalSellHistory}</Text>
         </Text>
         <Text>{selectedDate}</Text>

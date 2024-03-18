@@ -239,18 +239,96 @@ const index = () => {
 
   return (
     <SafeAreaView style={{ padding: 10 }}>
-      {/* Calculation display */}
-      <View style={styles.estimateDisplay}>
-        <Text style={styles.innerEstimateBox}>{totalCost}</Text>
-      </View>
-      {/* Controller */}
-      <View
-        style={{
-          flexDirection: "row",
-          justifyContent: "space-between",
-          marginTop: 10,
-        }}
-      >
+      <View style={{ height: "100%" }}>
+        {/* Calculation display */}
+        <View style={styles.estimateDisplay}>
+          <Text style={styles.innerEstimateBox}>{totalCost}</Text>
+        </View>
+        {/* Controller */}
+        <View
+          style={{
+            flexDirection: "row",
+            justifyContent: "space-between",
+            marginTop: 10,
+          }}
+        >
+          {/* Reset and pop button */}
+          <View style={{ flexDirection: "row", gap: 20 }}>
+            {/* Reset button */}
+            <TouchableOpacity onPress={handleResetMenuSelection}>
+              <View style={{ width: 30, height: 30 }}>
+                <Svg
+                  clip-rule="evenodd"
+                  fill-rule="evenodd"
+                  stroke-linejoin="round"
+                  stroke-miterlimit="2"
+                  viewBox="0 0 24 24"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <Path
+                    d="m3.508 6.726c1.765-2.836 4.911-4.726 8.495-4.726 5.518 0 9.997 4.48 9.997 9.997 0 5.519-4.479 9.999-9.997 9.999-5.245 0-9.553-4.048-9.966-9.188-.024-.302.189-.811.749-.811.391 0 .715.3.747.69.351 4.369 4.012 7.809 8.47 7.809 4.69 0 8.497-3.808 8.497-8.499 0-4.689-3.807-8.497-8.497-8.497-3.037 0-5.704 1.597-7.206 3.995l1.991.005c.414 0 .75.336.75.75s-.336.75-.75.75h-4.033c-.414 0-.75-.336-.75-.75v-4.049c0-.414.336-.75.75-.75s.75.335.75.75zm8.492 2.272c1.656 0 3 1.344 3 3s-1.344 3-3 3-3-1.344-3-3 1.344-3 3-3z"
+                    fill-rule="nonzero"
+                  />
+                </Svg>
+              </View>
+            </TouchableOpacity>
+            {/* Pop button */}
+            <TouchableOpacity onPress={handlePopOrder}>
+              <View style={{ width: 30, height: 30 }}>
+                <Svg
+                  clip-rule="evenodd"
+                  fill-rule="evenodd"
+                  stroke-linejoin="round"
+                  stroke-miterlimit="2"
+                  viewBox="0 0 24 24"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <Path
+                    d="m22 6c0-.552-.448-1-1-1h-12.628c-.437 0-.853.191-1.138.523-1.078 1.256-3.811 4.439-4.993 5.815-.16.187-.241.419-.241.651 0 .231.08.463.24.651 1.181 1.38 3.915 4.575 4.994 5.835.285.333.701.525 1.14.525h12.626c.552 0 1-.448 1-1 0-2.577 0-9.423 0-12zm-13.628.5h12.128v11h-12.126l-4.715-5.51zm5.637 4.427 1.71-1.71c.146-.146.339-.219.531-.219.404 0 .75.324.75.749 0 .193-.073.384-.219.531l-1.711 1.711 1.728 1.728c.147.147.22.339.22.53 0 .427-.349.751-.75.751-.192 0-.384-.073-.531-.219l-1.728-1.729-1.728 1.729c-.146.146-.339.219-.531.219-.401 0-.75-.324-.75-.751 0-.191.073-.383.22-.53l1.728-1.728-1.788-1.787c-.146-.148-.219-.339-.219-.532 0-.425.346-.749.751-.749.192 0 .384.073.53.219z"
+                    fill-rule="nonzero"
+                  />
+                </Svg>
+              </View>
+            </TouchableOpacity>
+          </View>
+        </View>
+        {isLoading && (
+          <View
+            style={{
+              flexDirection: "column",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            <Text style={{ textAlign: "center", fontSize: 18 }}>
+              Loading...
+            </Text>
+          </View>
+        )}
+        {/* Category list */}
+        <View style={{ marginVertical: 10 }}>
+          <FlatList
+            data={categories}
+            renderItem={(cat) => (
+              <RippleBtn
+                key={cat.index}
+                value={cat.item}
+                onPress={handleFilterCategory}
+              />
+            )}
+            horizontal={true}
+          />
+        </View>
+        {/* Menu list */}
+        <FlatList
+          numColumns={2}
+          data={filteredMenu}
+          style={styles.menuContainer}
+          renderItem={(cat) => <RenderItem key={cat.index} cat={cat.item} />}
+          refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+          }
+        />
         {/* Submit button */}
         <TouchableOpacity
           style={{
@@ -259,90 +337,17 @@ const index = () => {
             justifyContent: "center",
             alignItems: "center",
             backgroundColor: "#FFC300",
+            paddingVertical: 5,
           }}
           onPress={handleSubmitCashMemo}
         >
           <Text
-            style={{ fontSize: 12, paddingHorizontal: 15, fontWeight: "bold" }}
+            style={{ fontSize: 16, paddingHorizontal: 15, fontWeight: "bold" }}
           >
-            {sellLoading ? "Loading..." : "Done"}
+            {sellLoading ? "Loading..." : "DONE"}
           </Text>
         </TouchableOpacity>
-        {/* Reset and pop button */}
-        <View style={{ flexDirection: "row", gap: 20 }}>
-          {/* Reset button */}
-          <TouchableOpacity onPress={handleResetMenuSelection}>
-            <View style={{ width: 30, height: 30 }}>
-              <Svg
-                clip-rule="evenodd"
-                fill-rule="evenodd"
-                stroke-linejoin="round"
-                stroke-miterlimit="2"
-                viewBox="0 0 24 24"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <Path
-                  d="m3.508 6.726c1.765-2.836 4.911-4.726 8.495-4.726 5.518 0 9.997 4.48 9.997 9.997 0 5.519-4.479 9.999-9.997 9.999-5.245 0-9.553-4.048-9.966-9.188-.024-.302.189-.811.749-.811.391 0 .715.3.747.69.351 4.369 4.012 7.809 8.47 7.809 4.69 0 8.497-3.808 8.497-8.499 0-4.689-3.807-8.497-8.497-8.497-3.037 0-5.704 1.597-7.206 3.995l1.991.005c.414 0 .75.336.75.75s-.336.75-.75.75h-4.033c-.414 0-.75-.336-.75-.75v-4.049c0-.414.336-.75.75-.75s.75.335.75.75zm8.492 2.272c1.656 0 3 1.344 3 3s-1.344 3-3 3-3-1.344-3-3 1.344-3 3-3z"
-                  fill-rule="nonzero"
-                />
-              </Svg>
-            </View>
-          </TouchableOpacity>
-          {/* Pop button */}
-          <TouchableOpacity onPress={handlePopOrder}>
-            <View style={{ width: 30, height: 30 }}>
-              <Svg
-                clip-rule="evenodd"
-                fill-rule="evenodd"
-                stroke-linejoin="round"
-                stroke-miterlimit="2"
-                viewBox="0 0 24 24"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <Path
-                  d="m22 6c0-.552-.448-1-1-1h-12.628c-.437 0-.853.191-1.138.523-1.078 1.256-3.811 4.439-4.993 5.815-.16.187-.241.419-.241.651 0 .231.08.463.24.651 1.181 1.38 3.915 4.575 4.994 5.835.285.333.701.525 1.14.525h12.626c.552 0 1-.448 1-1 0-2.577 0-9.423 0-12zm-13.628.5h12.128v11h-12.126l-4.715-5.51zm5.637 4.427 1.71-1.71c.146-.146.339-.219.531-.219.404 0 .75.324.75.749 0 .193-.073.384-.219.531l-1.711 1.711 1.728 1.728c.147.147.22.339.22.53 0 .427-.349.751-.75.751-.192 0-.384-.073-.531-.219l-1.728-1.729-1.728 1.729c-.146.146-.339.219-.531.219-.401 0-.75-.324-.75-.751 0-.191.073-.383.22-.53l1.728-1.728-1.788-1.787c-.146-.148-.219-.339-.219-.532 0-.425.346-.749.751-.749.192 0 .384.073.53.219z"
-                  fill-rule="nonzero"
-                />
-              </Svg>
-            </View>
-          </TouchableOpacity>
-        </View>
       </View>
-      {isLoading && (
-        <View
-          style={{
-            flexDirection: "column",
-            justifyContent: "center",
-            alignItems: "center",
-          }}
-        >
-          <Text style={{ textAlign: "center", fontSize: 18 }}>Loading...</Text>
-        </View>
-      )}
-      {/* Category list */}
-      <View style={{ marginVertical: 10 }}>
-        <FlatList
-          data={categories}
-          renderItem={(cat) => (
-            <RippleBtn
-              key={cat.index}
-              value={cat.item}
-              onPress={handleFilterCategory}
-            />
-          )}
-          horizontal={true}
-        />
-      </View>
-      {/* Menu list */}
-      <FlatList
-        numColumns={2}
-        data={filteredMenu}
-        style={styles.menuContainer}
-        renderItem={(cat) => <RenderItem key={cat.index} cat={cat.item} />}
-        refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-        }
-      />
     </SafeAreaView>
   );
 };
@@ -352,15 +357,15 @@ const styles = StyleSheet.create({
     backgroundColor: "#ffffff",
     borderRadius: 10,
     padding: 10,
-    paddingTop: 60,
+    paddingTop: 30,
   },
   innerEstimateBox: {
     marginLeft: "auto",
-    fontSize: 25,
+    fontSize: 55,
     fontWeight: "700",
   },
   menuContainer: {
-    marginBottom: 190,
+    marginBottom: 10,
   },
   individualMenuItemContainer: {
     flex: 1,

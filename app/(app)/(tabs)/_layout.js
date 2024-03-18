@@ -4,7 +4,14 @@ import FontAwesome from "@expo/vector-icons/FontAwesome";
 
 const TabLayout = () => {
   return (
-    <Tabs screenOptions={{ tabBarActiveTintColor: "#3498db" }}>
+    <Tabs
+      screenOptions={{
+        tabBarActiveTintColor: "#3498db",
+        tabBarStyle: {
+          height: 50,
+        },
+      }}
+    >
       <Tabs.Screen
         name="index"
         options={{
@@ -16,6 +23,17 @@ const TabLayout = () => {
           ),
         }}
       />
+      {/* <Tabs.Screen
+        name="swip"
+        options={{
+          headerTitle: "Swip",
+          headerShown: false,
+          title: "Swip",
+          tabBarIcon: ({ size, color }) => (
+            <FontAwesome size={size} name="home" color={color} />
+          ),
+        }}
+      /> */}
       <Tabs.Screen
         name="(dashboard)"
         options={{
