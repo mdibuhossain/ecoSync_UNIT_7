@@ -112,24 +112,26 @@ const index = () => {
   };
 
   const handleSubmitCashMemo = async () => {
-    setSellLoading(true);
-    try {
-      if (user) {
-        const result = await addDoc(memoCollection, {
-          ...estimate,
-          createdAt: Timestamp.now(),
-          sell: totalCost,
-        });
-        // console.log(result);
-        if (result) {
-          setTotalCost(0);
-          setEstimate({});
-          setEstimateSerial([]);
+    if (totalCost > 0) {
+      setSellLoading(true);
+      try {
+        if (user) {
+          const result = await addDoc(memoCollection, {
+            ...estimate,
+            createdAt: Timestamp.now(),
+            sell: totalCost,
+          });
+          // console.log(result);
+          if (result) {
+            setTotalCost(0);
+            setEstimate({});
+            setEstimateSerial([]);
+          }
         }
+      } catch (err) {
+      } finally {
+        setSellLoading(false);
       }
-    } catch (err) {
-    } finally {
-      setSellLoading(false);
     }
   };
 
@@ -347,13 +349,18 @@ const index = () => {
             overflow: "hidden",
             justifyContent: "center",
             alignItems: "center",
-            backgroundColor: "#FFC300",
+            backgroundColor: totalCost > 0 ? "#FFC300" : "#cccccc",
             paddingVertical: 5,
           }}
           onPress={handleSubmitCashMemo}
         >
           <Text
-            style={{ fontSize: 16, paddingHorizontal: 15, fontWeight: "bold" }}
+            style={{
+              fontSize: 16,
+              paddingHorizontal: 15,
+              fontWeight: "bold",
+              color: totalCost > 0 ? "black" : "#727272",
+            }}
           >
             {sellLoading ? "Loading..." : "DONE"}
           </Text>
