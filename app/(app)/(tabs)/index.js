@@ -133,9 +133,18 @@ const index = () => {
     }
   };
 
-  const RenderItem = ({ cat }) => {
+  const RenderItem = ({ cat, index }) => {
     return (
-      <View key={cat.index} style={styles.individualMenuItemContainer}>
+      <View
+        key={cat.index}
+        style={{
+          ...styles.individualMenuItemContainer,
+          maxWidth:
+            filteredMenu.length % 2 !== 0 && index % 2 === 0
+              ? 100 / 2.1 + "%"
+              : 100 / 2 + "%",
+        }}
+      >
         <TouchableOpacity
           onPress={() => handleCount(cat)}
           activeOpacity={0.6}
@@ -248,7 +257,7 @@ const index = () => {
         <View
           style={{
             flexDirection: "row",
-            justifyContent: "space-between",
+            justifyContent: "flex-end",
             marginTop: 10,
           }}
         >
@@ -324,7 +333,9 @@ const index = () => {
           numColumns={2}
           data={filteredMenu}
           style={styles.menuContainer}
-          renderItem={(cat) => <RenderItem key={cat.index} cat={cat.item} />}
+          renderItem={(cat) => (
+            <RenderItem key={cat.index} index={cat.index} cat={cat.item} />
+          )}
           refreshControl={
             <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
           }
@@ -370,7 +381,7 @@ const styles = StyleSheet.create({
   individualMenuItemContainer: {
     flex: 1,
     height: 150,
-    maxWidth: 100 / 2.185 + "%",
+    maxWidth: 100 / 2 + "%",
     backgroundColor: "rgb(231, 231, 231)",
     borderRadius: 5,
     marginHorizontal: 5,
