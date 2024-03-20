@@ -33,43 +33,7 @@ const MyComponent = () => {
   const [foods] = useState([
     { category: "Category 1", items: ["Food 1", "Food 2", "Food 3"] },
     { category: "Category 2", items: ["Food 4", "Food 5", "Food 6"] },
-    {
-      category: "Category 3",
-      items: [
-        "Food 7",
-        "Food 8",
-        "Food 9",
-        "Food 9",
-        "Food 9",
-        "Food 9",
-        "Food 9",
-        "Food 9",
-        "Food 9",
-        "Food 9",
-        "Food 9",
-        "Food 9",
-        "Food 9",
-        "Food 9",
-        "Food 9",
-        "Food 9",
-        "Food 9",
-        "Food 9",
-        "Food 9",
-        "Food 9",
-        "Food 9",
-        "Food 9",
-        "Food 9",
-        "Food 9",
-        "Food 9",
-        "Food 9",
-        "Food 9",
-        "Food 9",
-        "Food 9",
-        "Food 9",
-        "Food 9",
-        "Food 9",
-      ],
-    },
+    { category: "Category 3", items: ["Food 7", "Food 8", "Food 9"] },
     { category: "Category 4", items: ["Food 7", "Food 8", "Food 9"] },
     { category: "Category 5", items: ["Food 7", "Food 8", "Food 9"] },
     { category: "Category 6", items: ["Food 7", "Food 8", "Food 9"] },
@@ -91,7 +55,7 @@ const MyComponent = () => {
     // Scroll to selected category when it goes out of the visible area
     if (scrollViewRef.current) {
       const screenWidth = Dimensions.get("window").width;
-      const categoryWidth = 120; // Adjust this value according to your category width
+      const categoryWidth = 140; // Adjust this value according to your category width
       const selectedCategoryOffset = selectedCategoryIndex * categoryWidth;
       const scrollViewWidth = screenWidth - 40; // Adjust this value according to your layout
       const maxVisibleCategories = Math.floor(scrollViewWidth / categoryWidth);
@@ -155,6 +119,7 @@ const MyComponent = () => {
 
 const styles = StyleSheet.create({
   container: {
+    flex: 1,
     marginTop: 20,
   },
   category: {
@@ -165,6 +130,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "gray",
     fontSize: 16,
+    width: 70,
   },
   selectedCategory: {
     backgroundColor: "gray",

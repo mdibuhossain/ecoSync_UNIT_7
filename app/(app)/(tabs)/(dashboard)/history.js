@@ -1,14 +1,14 @@
 import React from "react";
-import { Button, FlatList, View } from "react-native";
+import { Button, FlatList, TouchableOpacity, View } from "react-native";
 import { Link, router } from "expo-router";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import { SafeAreaView } from "react-native-safe-area-context";
 import RippleBtn from "../../../components/RippleBtn";
-import { Timestamp } from "firebase/firestore";
+import { Timestamp, orderBy } from "firebase/firestore";
 import { query, where, getDocs } from "firebase/firestore";
 import { memoCollection } from "../../../../config/firebaseConfig";
 import { TouchableRipple, Text } from "react-native-paper";
-import HistoryModal from "../../../components/historyModa";
+import HistoryModal from "../../../components/historyModal";
 
 const History = () => {
   const [isDatePickerVisible, setDatePickerVisibility] = React.useState(false);
@@ -17,6 +17,7 @@ const History = () => {
   const [selectedDate, setSelectedDate] = React.useState("");
   const [modalVisible, setModalVisible] = React.useState(false);
   const [singleProduct, setSingleProduct] = React.useState({});
+  const [totalSellProductQnt, setTotalSellProductQnt] = React.useState({});
 
   const showDatePicker = () => {
     setDatePickerVisibility(true);
@@ -24,6 +25,25 @@ const History = () => {
   const hideDatePicker = () => {
     setDatePickerVisibility(false);
   };
+
+  const countFoods = (singleProduct, tmpQnt) => {
+    const { date, id, sell, createdAt, ...products } = singleProduct;
+    const keys = Object.keys(products);
+    keys.map((key) => {
+      tmpQnt[key] = tmpQnt[key]
+        ? tmpQnt[key] + products[key]?.qnt
+        : products[key]?.qnt;
+    });
+  };
+
+  React.useEffect(() => {
+    const mainQnt = {};
+    sellHistory.map((item) => {
+      countFoods(item, mainQnt);
+    });
+    console.log(mainQnt);
+    setTotalSellProductQnt(mainQnt);
+  }, [sellHistory]);
 
   const convertTo12HourFormat = (date) => {
     const hours = date.getHours();
@@ -56,7 +76,8 @@ const History = () => {
         query(
           memoCollection,
           where("createdAt", ">=", startOfDate),
-          where("createdAt", "<=", endOfDate)
+          where("createdAt", "<=", endOfDate),
+          orderBy("createdAt", "desc")
         )
       );
       const document = [];
@@ -73,6 +94,7 @@ const History = () => {
   };
 
   const handleConfirm = async (date) => {
+    setTotalSellProductQnt({});
     try {
       setSelectedDate(new Date(date).toDateString());
       const startOfDate = Timestamp.fromDate(
@@ -82,13 +104,6 @@ const History = () => {
         new Date(date.setHours(23, 59, 59, 999))
       );
       await fetchData(startOfDate, endOfDate);
-
-      // const startDate = new Date(date);
-      // startDate.setHours(0, 0, 0, 0);
-      // const endDate = new Date(date);
-      // endDate.setHours(23, 59, 59, 999);
-      // console.log(startOfDate);
-      // console.log(endOfDate);
     } catch (err) {
       console.error(err.message);
     } finally {
@@ -150,17 +165,20 @@ const History = () => {
 
   return (
     <View style={{ padding: 10 }}>
+      {/* Order detials - Modal  */}
       <HistoryModal
         modalVisible={modalVisible}
         setModalVisible={setModalVisible}
         singleProduct={singleProduct}
       />
+      {/* Filter by buttons */}
       <View style={{ flexDirection: "row", columnGap: 5 }}>
         <RippleBtn value={"7d"} onPress={() => handleRangeDate(7)} />
         <RippleBtn value={"15d"} onPress={() => handleRangeDate(15)} />
         <RippleBtn value={"30d"} onPress={() => handleRangeDate(30)} />
         {DatePicker()}
       </View>
+      {/* Total sell info and filter selection title */}
       <View
         style={{
           flexDirection: "row",
@@ -174,7 +192,38 @@ const History = () => {
         </Text>
         <Text>{selectedDate}</Text>
       </View>
-      <View style={{ marginBottom: 145 }}>
+      {/* Sell history details route */}
+      {totalSellHistory > 0 && (
+        <View
+          style={{
+            alignItems: "flex-start",
+            marginBottom: 10,
+          }}
+        >
+          <TouchableOpacity
+            onPress={() =>
+              router.push({
+                pathname: "productSellDetails",
+                params: totalSellProductQnt,
+              })
+            }
+          >
+            <Text
+              style={{
+                backgroundColor: "lime",
+                borderRadius: 10,
+                overflow: "hidden",
+                paddingHorizontal: 10,
+                padding: 5,
+              }}
+            >
+              View details
+            </Text>
+          </TouchableOpacity>
+        </View>
+      )}
+      {/* Filtered orders */}
+      <View style={{ marginBottom: 225 }}>
         <FlatList
           data={sellHistory}
           renderItem={({ index, item }) => (
