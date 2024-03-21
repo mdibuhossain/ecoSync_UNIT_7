@@ -1,13 +1,21 @@
 import { StyleSheet, View } from "react-native";
 import { TouchableRipple, Text } from "react-native-paper";
 
-const RippleBtn = ({ onPress, value }) => {
+const RippleBtn = ({ onPress, value, selected, index }) => {
   return (
     <View style={styles.catBtnContainer}>
       <TouchableRipple
-        onPress={() => onPress(value)}
-        rippleColor="rgba(0, 0, 0, 0.5)"
-        style={styles.catBtn}
+        onPress={() => onPress(value, index)}
+        rippleColor="rgba(0, 0, 0, 0.2)"
+        style={{
+          ...styles.catBtn,
+          backgroundColor:
+            typeof index === "number"
+              ? selected === index
+                ? "lime"
+                : "white"
+              : "white",
+        }}
       >
         <Text style={styles.label}>{value}</Text>
       </TouchableRipple>
@@ -25,7 +33,6 @@ const styles = StyleSheet.create({
     borderRadius: 50, // Adjust the border radius as needed
     paddingVertical: 6,
     paddingHorizontal: 16,
-    backgroundColor: "#fff", // Change the background color as needed
   },
   label: {
     color: "#000", // Change the text color as needed

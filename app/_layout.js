@@ -1,11 +1,14 @@
 import React from "react";
 import { Slot } from "expo-router";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { AuthProvider } from "../contexts/authContext";
 
 const RootLayout = () => {
   return (
     <AuthProvider>
-      <Slot />
+      <GestureHandlerRootView style={{ flex: 1 }}>
+        <Slot />
+      </GestureHandlerRootView>
     </AuthProvider>
   );
 };

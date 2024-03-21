@@ -13,6 +13,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import RippleBtn from "../../components/RippleBtn";
 import { onSnapshot, addDoc, Timestamp } from "@firebase/firestore";
 import Svg, { Path } from "react-native-svg";
+import Swiper from "react-native-swiper";
 import { menuCollection, memoCollection } from "../../../config/firebaseConfig";
 import { AuthContext } from "../../../contexts/authContext";
 
@@ -27,6 +28,7 @@ const index = () => {
   const [refreshing, setRefreshing] = React.useState(false);
   const [isLoading, setIsLoading] = React.useState(true);
   const [sellLoading, setSellLoading] = React.useState(false);
+  const [selectedCategoryIndex, setSelectedCategoryIndex] = React.useState(0);
 
   const fetchData = () => {
     setIsLoading(true);
@@ -64,7 +66,8 @@ const index = () => {
     setCategories(tmp);
   }, [menu]);
 
-  const handleFilterCategory = (e) => {
+  const handleFilterCategory = (e, index) => {
+    setSelectedCategoryIndex(index);
     const tmp = [...menu?.filter((obj) => obj?.category === e)];
     setFilteredMenu(tmp);
   };
@@ -322,6 +325,8 @@ const index = () => {
             data={categories}
             renderItem={(cat) => (
               <RippleBtn
+                selected={selectedCategoryIndex}
+                index={cat.index}
                 key={cat.index}
                 value={cat.item}
                 onPress={handleFilterCategory}
@@ -331,17 +336,30 @@ const index = () => {
           />
         </View>
         {/* Menu list */}
-        <FlatList
-          numColumns={2}
-          data={filteredMenu}
-          style={styles.menuContainer}
-          renderItem={(cat) => (
-            <RenderItem key={cat.index} index={cat.index} cat={cat.item} />
-          )}
-          refreshControl={
-            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-          }
-        />
+        <Swiper
+          loop={false}
+          index={selectedCategoryIndex}
+          showsPagination={false}
+          showsButtons={false}
+          onIndexChanged={(index) => {
+            setSelectedCategoryIndex(index);
+          }}
+        >
+          {categories?.map((catName, idx) => (
+            <FlatList
+              key={idx}
+              numColumns={2}
+              data={menu?.filter((item) => item?.category === catName)}
+              style={styles.menuContainer}
+              renderItem={(cat) => (
+                <RenderItem key={cat.index} index={cat.index} cat={cat.item} />
+              )}
+              refreshControl={
+                <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+              }
+            />
+          ))}
+        </Swiper>
         {/* Submit button */}
         <TouchableOpacity
           style={{
@@ -384,6 +402,7 @@ const styles = StyleSheet.create({
   },
   menuContainer: {
     marginBottom: 10,
+    width: "100%",
   },
   individualMenuItemContainer: {
     flex: 1,

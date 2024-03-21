@@ -41,7 +41,7 @@ const History = () => {
     sellHistory.map((item) => {
       countFoods(item, mainQnt);
     });
-    console.log(mainQnt);
+    // console.log(mainQnt);
     setTotalSellProductQnt(mainQnt);
   }, [sellHistory]);
 
