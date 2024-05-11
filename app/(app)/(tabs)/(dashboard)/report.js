@@ -16,16 +16,16 @@ import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import { onSnapshot, addDoc } from "@firebase/firestore";
 import {
   FIREBASE_STORAGE,
-  menuCollection,
+  reportCollection,
 } from "../../../../config/firebaseConfig";
+import { AuthContext } from "../../../../contexts/authContext";
 
-const NewMenu = () => {
+const Report = () => {
+  const { user } = React.useContext(AuthContext);
   const [image, setImage] = React.useState(null);
-  const [name, setName] = React.useState("");
-  const [category, setCategory] = React.useState("");
-  const [subCategory, setSubCategory] = React.useState("");
-  const [unit, setUnit] = React.useState("");
-  const [price, setPrice] = React.useState("");
+  const [location, setLocation] = React.useState("");
+  const [issueType, setIssueType] = React.useState("");
+  const [description, setDescription] = React.useState("");
   const [photo, setPhoto] = React.useState("");
   const [uploading, setUploading] = React.useState(false);
 
@@ -47,7 +47,7 @@ const NewMenu = () => {
   const uploadImage = async () => {
     const response = await fetch(image);
     const blob = await response.blob();
-    const filename = `menu photos/${name}.${image.split(".").pop()}`;
+    const filename = `report photos/${location}.${image.split(".").pop()}`;
     const storageRef = ref(FIREBASE_STORAGE, filename);
     let result = "";
     await uploadBytes(storageRef, blob);
@@ -56,29 +56,36 @@ const NewMenu = () => {
     return photoURL;
   };
 
-  const handleSubmit = async () => {
+  const handleSubmit = async (flag) => {
     try {
       setUploading(true);
       const photoURL = await uploadImage();
-      const data = {
-        category: category.toLowerCase(),
-        name,
-        photo: photoURL,
-        price: Number(price),
-        subCategory: subCategory.toLowerCase(),
-        unit,
-      };
-      addDoc(menuCollection, data).then((ref) => {
+      let data = {};
+      if (!flag) {
+        data = {
+          issueType: issueType,
+          location: location,
+          photoURL: photoURL,
+          description: description,
+          email: user?.email,
+        };
+      } else {
+        data = {
+          issueType: issueType,
+          location: location,
+          photoURL: photoURL,
+          description: description,
+        };
+      }
+      addDoc(reportCollection, data).then((ref) => {
         Alert.alert("Successfully added!!");
-        // setName("");
-        // setCategory("");
-        // setSubCategory("");
-        // setPhoto("");
-        // setImage("");
-        // setPrice("");
-        // setUnit("");
+        setIssueType("");
+        setLocation("");
+        setDescription("");
+        setImage(null);
       });
     } catch (err) {
+      console.error(err.message);
     } finally {
       setUploading(false);
     }
@@ -99,47 +106,43 @@ const NewMenu = () => {
             style={{ width: 100, height: 100, marginBottom: 10 }}
           />
         )}
-        <Text style={styles.labelText}>Name:</Text>
+        <Text style={styles.labelText}>Location:</Text>
         <TextInput
           style={styles.input}
-          onChangeText={setName}
-          value={name}
-          placeholder="Ex: Mixed Chowmein"
+          onChangeText={setLocation}
+          value={location}
+          placeholder="Type manually"
         />
-        <Text style={styles.labelText}>Category:</Text>
+        <Text style={styles.labelText}>Issue Type:</Text>
         <TextInput
           style={styles.input}
-          onChangeText={setCategory}
-          value={category}
-          placeholder="Ex: heavy meal"
+          onChangeText={setIssueType}
+          value={issueType}
+          placeholder="Overflowing bins, littering, illegal dumping, or damanged infrastructure"
         />
-        <Text style={styles.labelText}>Sub category:</Text>
+        <Text style={styles.labelText}>Description:</Text>
         <TextInput
+          multiline={true}
           style={styles.input}
-          onChangeText={setSubCategory}
-          value={subCategory}
-          placeholder="Ex: chinese"
-        />
-        <Text style={styles.labelText}>Unit:</Text>
-        <TextInput
-          style={styles.input}
-          onChangeText={setUnit}
-          value={unit}
-          placeholder="Ex: half"
-        />
-        <Text style={styles.labelText}>Price:</Text>
-        <TextInput
-          style={styles.input}
-          onChangeText={setPrice}
-          value={price}
-          keyboardType="numeric"
-          placeholder="Ex: 59"
+          onChangeText={setDescription}
+          value={description}
+          placeholder="Describe the issue"
         />
         <Pressable style={styles.imgBtn} onPress={pickImage}>
           <Text>Choose Menu photo</Text>
         </Pressable>
-        <Pressable style={styles.submitBtn} onPress={handleSubmit}>
-          <Text style={styles.btnText}>{uploading ? "Loading..." : "ADD"}</Text>
+        <Pressable style={styles.submitBtn} onPress={() => handleSubmit(false)}>
+          <Text style={styles.btnText}>
+            {uploading ? "Loading..." : "SUBMIT REPORT"}
+          </Text>
+        </Pressable>
+        <Pressable
+          style={{ ...styles.submitBtn, backgroundColor: "red" }}
+          onPress={() => handleSubmit(true)}
+        >
+          <Text style={styles.btnText}>
+            {uploading ? "Loading..." : "SUBMIT AS ANONYMOUS"}
+          </Text>
         </Pressable>
       </View>
     </ScrollView>
@@ -186,4 +189,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default NewMenu;
+export default Report;

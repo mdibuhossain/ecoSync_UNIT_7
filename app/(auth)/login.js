@@ -52,6 +52,7 @@ export default function AuthScreen() {
 
   return (
     <View style={styles.container}>
+      <Text style={styles.logo}>EcoSync</Text>
       <View style={styles.authContainer}>
         <Text style={styles.title}>{isLoginUI ? "Sign in" : "Sign up"}</Text>
         <TextInput
@@ -92,7 +93,10 @@ export default function AuthScreen() {
         </View>
 
         <View style={styles.bottomContainer}>
-          <Text style={styles.toggleText} onPress={() => setIsLoginUI(!isLoginUI)}>
+          <Text
+            style={styles.toggleText}
+            onPress={() => setIsLoginUI(!isLoginUI)}
+          >
             {isLoginUI
               ? "Need an account? Sign up"
               : "Already have an account? Sign in"}
@@ -122,6 +126,12 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 24,
     marginBottom: 16,
+    textAlign: "center",
+  },
+  logo: {
+    fontSize: 30,
+    marginBottom: 50,
+    fontWeight: "900",
     textAlign: "center",
   },
   input: {

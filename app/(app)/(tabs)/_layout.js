@@ -13,33 +13,22 @@ const TabLayout = () => {
       }}
     >
       <Tabs.Screen
-        name="index"
-        options={{
-          headerTitle: "Estimate",
-          headerShown: false,
-          title: "Estimate",
-          tabBarIcon: ({ size, color }) => (
-            <FontAwesome size={size} name="home" color={color} />
-          ),
-        }}
-      />
-      {/* <Tabs.Screen
-        name="swip"
-        options={{
-          headerTitle: "Swip",
-          headerShown: false,
-          title: "Swip",
-          tabBarIcon: ({ size, color }) => (
-            <FontAwesome size={size} name="home" color={color} />
-          ),
-        }}
-      /> */}
-      <Tabs.Screen
         name="(dashboard)"
         options={{
           headerTitle: "Dashboard",
           headerShown: false,
           title: "Dashboard",
+          tabBarIcon: ({ size, color }) => (
+            <FontAwesome size={size} name="home" color={color} />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="index"
+        options={{
+          headerTitle: "Other",
+          headerShown: false,
+          title: "Other",
           tabBarIcon: ({ size, color }) => (
             <FontAwesome size={size} name="cog" color={color} />
           ),

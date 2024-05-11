@@ -5,12 +5,12 @@ import { getStorage } from "@firebase/storage";
 import ReactNativeAsyncStorage from "@react-native-async-storage/async-storage";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyBCbHY1W6hz6AIkKnkxMmYq0I_anzVxFkM",
-  authDomain: "krunchmanagement.firebaseapp.com",
-  projectId: "krunchmanagement",
-  storageBucket: "krunchmanagement.appspot.com",
-  messagingSenderId: "597393762285",
-  appId: "1:597393762285:web:c3729bce0d4a524690e9e4",
+  apiKey: "AIzaSyAfSagv8McLdJbyNMl9hirZyaQK3P5WPoA",
+  authDomain: "ecosync-99117.firebaseapp.com",
+  projectId: "ecosync-99117",
+  storageBucket: "ecosync-99117.appspot.com",
+  messagingSenderId: "62139487710",
+  appId: "1:62139487710:web:c98cdb556039ce2097394f",
 };
 
 export const FIREBASE_APP = initializeApp(firebaseConfig);
@@ -21,4 +21,9 @@ export const FIREBASE_AUTH = initializeAuth(FIREBASE_APP, {
 });
 
 export const menuCollection = collection(FIREBASE_DB, "menu");
+export const reportCollection = collection(FIREBASE_DB, "report");
+export const volunteerCollection = collection(
+  FIREBASE_DB,
+  "volunteerRegistration"
+);
 export const memoCollection = collection(FIREBASE_DB, "memo");
